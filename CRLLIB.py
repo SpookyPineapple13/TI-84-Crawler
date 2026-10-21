@@ -11,7 +11,7 @@ class Player:
         inte = input("")
         q_txt, q_ans, g_h, b_h = q
 
-        if inte == "s": 
+        if inte == "S": 
             enemy.show_stat(True)
             scr.buf[5] = "Player"
             scr.buf[6] = "HP: " + str(self.hp)
@@ -21,7 +21,7 @@ class Player:
             scr.clr(); enemy.show_stat()
             return False
             
-        elif inte == "m":
+        elif inte == "M":
             enemy.show_stat()
             scr.buf[6], scr.buf[7], scr.buf[8] = "1 - ground", "2 - air", "3 - crouch"
             scr.ref()
@@ -56,14 +56,17 @@ class GameScreen:
 
 class Monster:
     def __init__(self, t):
-        self.t = t # 0 for Goblin, 1 for DigiBat
-        self.name = "Goblin" if t == 0 else "DigiBat"
-        self.mode = "ground" if t == 0 else "air"
-        self.hp = 8 if t == 0 else 6
+        self.t = t 
+        if t == 0:
+            self.name, self.mode, self.hp, self.a_special = "Goblin", "ground", 8, 3
+        elif t == 1:
+            self.name, self.mode, self.hp, self.a_special = "DigiBat", "air", 6, 2
+        elif t == 2:
+            self.name, self.mode, self.hp, self.a_special = "Gelatin Cube", "crouch", 12, 4
+        
         self.mry = 5
         self.alive = True
         self.a_basic = 1
-        self.a_special = 3 if t == 0 else 2
 
     def basic(self):
         global player
@@ -104,16 +107,29 @@ class Monster:
             if self.t == 0:
                 c = random.choice([("2 * 2", 4), ("4 * 8", 32), ("12 * 0.5", 6), ("13 + (-)80", -67)])
                 return (c[0], c[1], self.basic_solve if c[1]==-67 else self.parry, self.basic if c[1]==-67 else self.special)
-            else:
+            elif self.t == 1:
                 c = random.choice([("-3 * 8", -24), ("-12 * -11", 132)])
+                return (c[0], c[1], self.parry, self.special)
+            elif self.t == 2:
+                c = random.choice([("4^3/2", 8), ("8^2/3", 4), ("9^3/2", 27), ("16^1/2", 4)])
                 return (c[0], c[1], self.parry, self.special)
         return None
     
     def get_basic(self):
-        t1, t2 = random.randint(1, 100), random.randint(1, 100)
-        if self.t == 0: return (str(t1) + "+" + str(t2), t1 + t2, self.basic_solve, self.basic)
-        return (str(t1) + "-" + str(t2), t1 - t2, self.basic_solve, self.basic)
+        if self.t == 0:
+            t1, t2 = random.randint(1, 100), random.randint(1, 100)
+            return (str(t1) + "+" + str(t2), t1 + t2, self.basic_solve, self.basic)
+        elif self.t == 1:
+            t1, t2 = random.randint(1, 100), random.randint(1, 100)
+            return (str(t1) + "-" + str(t2), t1 - t2, self.basic_solve, self.basic)
+        elif self.t == 2:
+            if random.random() < 0.5:
+                n = random.randint(2, 12)
+                return (str(n) + "^2", n * n, self.basic_solve, self.basic)
+            else:
+                n = random.randint(2, 6)
+                return (str(n) + "^3", n * n * n, self.basic_solve, self.basic)
 
 scr = GameScreen()
 player = Player()
-enemy = Monster(random.choice([0, 1]))
+enemy = Monster(random.choice([0, 1, 2]))
