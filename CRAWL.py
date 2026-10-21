@@ -15,6 +15,6 @@ def main():
             resolved = CRLLIB.player.move_op(q) 
 
         if not CRLLIB.enemy.alive: 
-            CRLLIB.enemy = 2#CRLLIB.Monster(random.choice([0, 1, 2]))
+            CRLLIB.enemy = CRLLIB.Monster(random.choice([0, 1, 2]))
 
 main()

@@ -11,7 +11,7 @@ class Player:
         inte = input("")
         q_txt, q_ans, g_h, b_h = q
 
-        if inte == "S": 
+        if inte == "s": 
             enemy.show_stat(True)
             scr.buf[5] = "Player"
             scr.buf[6] = "HP: " + str(self.hp)
@@ -21,7 +21,7 @@ class Player:
             scr.clr(); enemy.show_stat()
             return False
             
-        elif inte == "M":
+        elif inte == "m":
             enemy.show_stat()
             scr.buf[6], scr.buf[7], scr.buf[8] = "1 - ground", "2 - air", "3 - crouch"
             scr.ref()
